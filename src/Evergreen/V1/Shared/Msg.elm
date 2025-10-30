@@ -1,5 +1,7 @@
 module Evergreen.V1.Shared.Msg exposing (..)
 
+import Evergreen.V1.Shared.Model
+
 
 type Msg
-    = GotNewSmashedLikes Int
+    = GotLeaderboard (List Evergreen.V1.Shared.Model.LeaderboardEntry)

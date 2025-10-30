@@ -1,4 +1,4 @@
-module Shared.Model exposing (Model)
+module Shared.Model exposing (LeaderboardEntry, Model)
 
 {-| -}
 
@@ -11,4 +11,16 @@ own file, so they can be imported by `Effect.elm`
 
 -}
 type alias Model =
-    { smashedLikes : Int }
+    { leaderboard3x3 : List LeaderboardEntry
+    , leaderboard5x5 : List LeaderboardEntry
+    , leaderboard10x10 : List LeaderboardEntry
+    }
+
+
+type alias LeaderboardEntry =
+    { name : String
+    , gameName : String
+    , time : Int
+    , mistakes : Int
+    , timestamp : Int
+    }

@@ -15,6 +15,9 @@ import Main.Pages.Model
 import Main.Pages.Msg
 import Page
 import Pages.Home_
+import Pages.Game10x10
+import Pages.Game3x3
+import Pages.Game5x5
 import Pages.NotFound_
 import Pages.NotFound_
 import Route exposing (Route)
@@ -93,6 +96,57 @@ initPageAndLayout model =
                 Tuple.mapBoth
                     Main.Pages.Model.Home_
                     (Effect.map Main.Pages.Msg.Home_ >> fromPageEffect model)
+                    ( pageModel, pageEffect )
+            , layout = Nothing
+            }
+
+        Route.Path.Game10x10 ->
+            let
+                page : Page.Page Pages.Game10x10.Model Pages.Game10x10.Msg
+                page =
+                    Pages.Game10x10.page model.shared (Route.fromUrl () model.url)
+
+                ( pageModel, pageEffect ) =
+                    Page.init page ()
+            in
+            { page = 
+                Tuple.mapBoth
+                    Main.Pages.Model.Game10x10
+                    (Effect.map Main.Pages.Msg.Game10x10 >> fromPageEffect model)
+                    ( pageModel, pageEffect )
+            , layout = Nothing
+            }
+
+        Route.Path.Game3x3 ->
+            let
+                page : Page.Page Pages.Game3x3.Model Pages.Game3x3.Msg
+                page =
+                    Pages.Game3x3.page model.shared (Route.fromUrl () model.url)
+
+                ( pageModel, pageEffect ) =
+                    Page.init page ()
+            in
+            { page = 
+                Tuple.mapBoth
+                    Main.Pages.Model.Game3x3
+                    (Effect.map Main.Pages.Msg.Game3x3 >> fromPageEffect model)
+                    ( pageModel, pageEffect )
+            , layout = Nothing
+            }
+
+        Route.Path.Game5x5 ->
+            let
+                page : Page.Page Pages.Game5x5.Model Pages.Game5x5.Msg
+                page =
+                    Pages.Game5x5.page model.shared (Route.fromUrl () model.url)
+
+                ( pageModel, pageEffect ) =
+                    Page.init page ()
+            in
+            { page = 
+                Tuple.mapBoth
+                    Main.Pages.Model.Game5x5
+                    (Effect.map Main.Pages.Msg.Game5x5 >> fromPageEffect model)
                     ( pageModel, pageEffect )
             , layout = Nothing
             }
@@ -330,6 +384,24 @@ updateFromPage msg model =
                 (Effect.map Main.Pages.Msg.Home_ >> fromPageEffect model)
                 (Page.update (Pages.Home_.page model.shared (Route.fromUrl () model.url)) pageMsg pageModel)
 
+        ( Main.Pages.Msg.Game10x10 pageMsg, Main.Pages.Model.Game10x10 pageModel ) ->
+            Tuple.mapBoth
+                Main.Pages.Model.Game10x10
+                (Effect.map Main.Pages.Msg.Game10x10 >> fromPageEffect model)
+                (Page.update (Pages.Game10x10.page model.shared (Route.fromUrl () model.url)) pageMsg pageModel)
+
+        ( Main.Pages.Msg.Game3x3 pageMsg, Main.Pages.Model.Game3x3 pageModel ) ->
+            Tuple.mapBoth
+                Main.Pages.Model.Game3x3
+                (Effect.map Main.Pages.Msg.Game3x3 >> fromPageEffect model)
+                (Page.update (Pages.Game3x3.page model.shared (Route.fromUrl () model.url)) pageMsg pageModel)
+
+        ( Main.Pages.Msg.Game5x5 pageMsg, Main.Pages.Model.Game5x5 pageModel ) ->
+            Tuple.mapBoth
+                Main.Pages.Model.Game5x5
+                (Effect.map Main.Pages.Msg.Game5x5 >> fromPageEffect model)
+                (Page.update (Pages.Game5x5.page model.shared (Route.fromUrl () model.url)) pageMsg pageModel)
+
         ( Main.Pages.Msg.NotFound_ pageMsg, Main.Pages.Model.NotFound_ pageModel ) ->
             Tuple.mapBoth
                 Main.Pages.Model.NotFound_
@@ -364,6 +436,24 @@ toLayoutFromPage model =
                 |> Pages.Home_.page model.shared
                 |> Page.layout pageModel
                 |> Maybe.map (Layouts.map (Main.Pages.Msg.Home_ >> Page))
+
+        Main.Pages.Model.Game10x10 pageModel ->
+            Route.fromUrl () model.url
+                |> Pages.Game10x10.page model.shared
+                |> Page.layout pageModel
+                |> Maybe.map (Layouts.map (Main.Pages.Msg.Game10x10 >> Page))
+
+        Main.Pages.Model.Game3x3 pageModel ->
+            Route.fromUrl () model.url
+                |> Pages.Game3x3.page model.shared
+                |> Page.layout pageModel
+                |> Maybe.map (Layouts.map (Main.Pages.Msg.Game3x3 >> Page))
+
+        Main.Pages.Model.Game5x5 pageModel ->
+            Route.fromUrl () model.url
+                |> Pages.Game5x5.page model.shared
+                |> Page.layout pageModel
+                |> Maybe.map (Layouts.map (Main.Pages.Msg.Game5x5 >> Page))
 
         Main.Pages.Model.NotFound_ pageModel ->
             Route.fromUrl () model.url
@@ -419,6 +509,21 @@ subscriptions model =
                 Main.Pages.Model.Home_ pageModel ->
                     Page.subscriptions (Pages.Home_.page model.shared (Route.fromUrl () model.url)) pageModel
                         |> Sub.map Main.Pages.Msg.Home_
+                        |> Sub.map Page
+
+                Main.Pages.Model.Game10x10 pageModel ->
+                    Page.subscriptions (Pages.Game10x10.page model.shared (Route.fromUrl () model.url)) pageModel
+                        |> Sub.map Main.Pages.Msg.Game10x10
+                        |> Sub.map Page
+
+                Main.Pages.Model.Game3x3 pageModel ->
+                    Page.subscriptions (Pages.Game3x3.page model.shared (Route.fromUrl () model.url)) pageModel
+                        |> Sub.map Main.Pages.Msg.Game3x3
+                        |> Sub.map Page
+
+                Main.Pages.Model.Game5x5 pageModel ->
+                    Page.subscriptions (Pages.Game5x5.page model.shared (Route.fromUrl () model.url)) pageModel
+                        |> Sub.map Main.Pages.Msg.Game5x5
                         |> Sub.map Page
 
                 Main.Pages.Model.NotFound_ pageModel ->
@@ -483,6 +588,21 @@ viewPage model =
         Main.Pages.Model.Home_ pageModel ->
             Page.view (Pages.Home_.page model.shared (Route.fromUrl () model.url)) pageModel
                 |> View.map Main.Pages.Msg.Home_
+                |> View.map Page
+
+        Main.Pages.Model.Game10x10 pageModel ->
+            Page.view (Pages.Game10x10.page model.shared (Route.fromUrl () model.url)) pageModel
+                |> View.map Main.Pages.Msg.Game10x10
+                |> View.map Page
+
+        Main.Pages.Model.Game3x3 pageModel ->
+            Page.view (Pages.Game3x3.page model.shared (Route.fromUrl () model.url)) pageModel
+                |> View.map Main.Pages.Msg.Game3x3
+                |> View.map Page
+
+        Main.Pages.Model.Game5x5 pageModel ->
+            Page.view (Pages.Game5x5.page model.shared (Route.fromUrl () model.url)) pageModel
+                |> View.map Main.Pages.Msg.Game5x5
                 |> View.map Page
 
         Main.Pages.Model.NotFound_ pageModel ->
@@ -560,6 +680,24 @@ toPageUrlHookCmd model routes =
                 |> List.map Page
                 |> toCommands
 
+        Main.Pages.Model.Game10x10 pageModel ->
+            Page.toUrlMessages routes (Pages.Game10x10.page model.shared (Route.fromUrl () model.url)) 
+                |> List.map Main.Pages.Msg.Game10x10
+                |> List.map Page
+                |> toCommands
+
+        Main.Pages.Model.Game3x3 pageModel ->
+            Page.toUrlMessages routes (Pages.Game3x3.page model.shared (Route.fromUrl () model.url)) 
+                |> List.map Main.Pages.Msg.Game3x3
+                |> List.map Page
+                |> toCommands
+
+        Main.Pages.Model.Game5x5 pageModel ->
+            Page.toUrlMessages routes (Pages.Game5x5.page model.shared (Route.fromUrl () model.url)) 
+                |> List.map Main.Pages.Msg.Game5x5
+                |> List.map Page
+                |> toCommands
+
         Main.Pages.Model.NotFound_ pageModel ->
             Page.toUrlMessages routes (Pages.NotFound_.page model.shared (Route.fromUrl () model.url)) 
                 |> List.map Main.Pages.Msg.NotFound_
@@ -617,6 +755,15 @@ isAuthProtected : Route.Path.Path -> Bool
 isAuthProtected routePath =
     case routePath of
         Route.Path.Home_ ->
+            False
+
+        Route.Path.Game10x10 ->
+            False
+
+        Route.Path.Game3x3 ->
+            False
+
+        Route.Path.Game5x5 ->
             False
 
         Route.Path.NotFound_ ->

@@ -57,11 +57,11 @@ config =
     , NoPrematureLetComputation.rule
         |> Rule.ignoreErrorsForDirectories [ ".elm-land/", "src/Evergreen/" ]
     , NoUnused.CustomTypeConstructors.rule []
-        |> Rule.ignoreErrorsForDirectories [ ".elm-land/", "src/Evergreen/" ]
+        |> Rule.ignoreErrorsForDirectories [ ".elm-land/", "src/Evergreen/", "src/Pages/" ]
     , NoUnused.CustomTypeConstructorArgs.rule
         |> Rule.ignoreErrorsForDirectories [ ".elm-land/", "src/Evergreen/" ]
-    , NoUnused.Dependencies.rule
-        |> Rule.ignoreErrorsForDirectories [ ".elm-land/", "src/Evergreen/" ]
+
+    -- NoUnused.Dependencies rule disabled - elm/bytes is used by Lamdera internally
     , NoUnused.Exports.rule
         |> Rule.ignoreErrorsForDirectories [ ".elm-land/", "src/Evergreen/" ]
     , NoUnused.Parameters.rule

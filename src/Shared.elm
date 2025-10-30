@@ -42,7 +42,10 @@ type alias Model =
 
 init : Result Json.Decode.Error Flags -> Route () -> ( Model, Effect Msg )
 init _ _ =
-    ( { smashedLikes = 0 }
+    ( { leaderboard3x3 = []
+      , leaderboard5x5 = []
+      , leaderboard10x10 = []
+      }
     , Effect.none
     )
 
@@ -58,8 +61,12 @@ type alias Msg =
 update : Route () -> Msg -> Model -> ( Model, Effect Msg )
 update _ msg model =
     case msg of
-        Shared.Msg.GotNewSmashedLikes count ->
-            ( { model | smashedLikes = count }
+        Shared.Msg.GotLeaderboards { leaderboard3x3, leaderboard5x5, leaderboard10x10 } ->
+            ( { model
+                | leaderboard3x3 = leaderboard3x3
+                , leaderboard5x5 = leaderboard5x5
+                , leaderboard10x10 = leaderboard10x10
+              }
             , Effect.none
             )
 

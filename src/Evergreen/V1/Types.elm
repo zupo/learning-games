@@ -9,8 +9,15 @@ type alias FrontendModel =
     Evergreen.V1.Main.Model
 
 
+type alias LeaderboardEntry =
+    { name : String
+    , time : Int
+    , mistakes : Int
+    }
+
+
 type alias BackendModel =
-    { smashedLikes : Int
+    { leaderboard : List LeaderboardEntry
     }
 
 
@@ -27,4 +34,4 @@ type BackendMsg
 
 
 type ToFrontend
-    = NewSmashedLikes Int
+    = NewLeaderboard (List LeaderboardEntry)

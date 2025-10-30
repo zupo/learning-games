@@ -8,6 +8,9 @@ import Url.Parser exposing ((</>))
 
 type Path
     = Home_
+    | Game10x10
+    | Game3x3
+    | Game5x5
     | NotFound_
 
 
@@ -30,6 +33,15 @@ fromString urlPath =
         [] ->
             Just Home_
 
+        "game10x10" :: [] ->
+            Just Game10x10
+
+        "game3x3" :: [] ->
+            Just Game3x3
+
+        "game5x5" :: [] ->
+            Just Game5x5
+
         _ ->
             Nothing
 
@@ -47,6 +59,15 @@ toString path =
             case path of
                 Home_ ->
                     []
+
+                Game10x10 ->
+                    [ "game10x10" ]
+
+                Game3x3 ->
+                    [ "game3x3" ]
+
+                Game5x5 ->
+                    [ "game5x5" ]
 
                 NotFound_ ->
                     [ "404" ]

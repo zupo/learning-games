@@ -1,4 +1,4 @@
-module Types exposing (BackendModel, BackendMsg(..), FrontendModel, FrontendMsg, ToBackend, ToFrontend(..))
+module Types exposing (BackendModel, BackendMsg(..), FrontendModel, FrontendMsg, LeaderboardEntry, ToBackend, ToFrontend(..))
 
 import Bridge
 import Lamdera exposing (ClientId)
@@ -9,8 +9,19 @@ type alias FrontendModel =
     ElmLand.Model
 
 
+type alias LeaderboardEntry =
+    { name : String
+    , gameName : String
+    , time : Int
+    , mistakes : Int
+    , timestamp : Int
+    }
+
+
 type alias BackendModel =
-    { smashedLikes : Int
+    { leaderboard3x3 : List LeaderboardEntry
+    , leaderboard5x5 : List LeaderboardEntry
+    , leaderboard10x10 : List LeaderboardEntry
     }
 
 
@@ -27,4 +38,8 @@ type BackendMsg
 
 
 type ToFrontend
-    = NewSmashedLikes Int
+    = NewLeaderboards
+        { leaderboard3x3 : List LeaderboardEntry
+        , leaderboard5x5 : List LeaderboardEntry
+        , leaderboard10x10 : List LeaderboardEntry
+        }

@@ -1,6 +1,13 @@
 module Evergreen.V1.Shared.Model exposing (..)
 
 
+type alias LeaderboardEntry =
+    { name : String
+    , time : Int
+    , mistakes : Int
+    }
+
+
 type alias Model =
-    { smashedLikes : Int
+    { leaderboard : List LeaderboardEntry
     }

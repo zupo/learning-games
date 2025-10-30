@@ -40,8 +40,8 @@ app =
 updateFromBackend : ToFrontend -> Model -> ( Model, Cmd FrontendMsg )
 updateFromBackend msg model =
     case msg of
-        NewSmashedLikes smashedLikes ->
-            ( model, sendSharedMsg <| Shared.Msg.GotNewSmashedLikes smashedLikes )
+        NewLeaderboards leaderboards ->
+            ( model, sendSharedMsg <| Shared.Msg.GotLeaderboards leaderboards )
 
 
 sendSharedMsg : Shared.Msg.Msg -> Cmd FrontendMsg

@@ -2,6 +2,8 @@ module Shared.Msg exposing (Msg(..))
 
 {-| -}
 
+import Shared.Model exposing (LeaderboardEntry)
+
 
 {-| Normally, this value would live in "Shared.elm"
 but that would lead to a circular dependency import cycle.
@@ -11,4 +13,8 @@ own file, so they can be imported by `Effect.elm`
 
 -}
 type Msg
-    = GotNewSmashedLikes Int
+    = GotLeaderboards
+        { leaderboard3x3 : List LeaderboardEntry
+        , leaderboard5x5 : List LeaderboardEntry
+        , leaderboard10x10 : List LeaderboardEntry
+        }

@@ -1,10 +1,9 @@
-port module Effect exposing
+module Effect exposing
     ( Effect
     , none, batch
     , sendCmd
     , pushRoute, replaceRoute
     , map, toCmd
-    , say
     )
 
 {-|
@@ -17,8 +16,6 @@ port module Effect exposing
 @docs pushRoute, replaceRoute
 
 @docs map, toCmd
-
-@docs say
 
 -}
 
@@ -39,8 +36,6 @@ type Effect msg
       -- ROUTING
     | PushUrl String
     | ReplaceUrl String
-      -- PORTS
-    | Say String
 
 
 
@@ -99,17 +94,7 @@ replaceRoute route =
 
 
 -- PORTS
-
-
-port text_to_speech : String -> Cmd msg
-
-
-say : String -> Effect msg
-say text =
-    Say text
-
-
-
+-- Unused port removed: text_to_speech
 -- INTERNALS
 
 
@@ -133,9 +118,6 @@ map fn effect =
 
         ReplaceUrl url ->
             ReplaceUrl url
-
-        Say text ->
-            Say text
 
 
 {-| Elm Land depends on this function to perform your effects.
@@ -166,6 +148,3 @@ toCmd options effect =
 
         ReplaceUrl url ->
             Browser.Navigation.replaceUrl options.key url
-
-        Say text ->
-            text_to_speech text

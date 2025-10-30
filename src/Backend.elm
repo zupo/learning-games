@@ -26,23 +26,63 @@ app =
 
 init : ( Model, Cmd BackendMsg )
 init =
-    ( { smashedLikes = 0 }, Cmd.none )
+    ( { leaderboard3x3 = []
+      , leaderboard5x5 = []
+      , leaderboard10x10 = []
+      }
+    , Cmd.none
+    )
 
 
 update : BackendMsg -> Model -> ( Model, Cmd BackendMsg )
 update msg model =
     case msg of
         OnConnect cid ->
-            ( model, Lamdera.sendToFrontend cid <| NewSmashedLikes model.smashedLikes )
+            ( model
+            , Lamdera.sendToFrontend cid <|
+                NewLeaderboards
+                    { leaderboard3x3 = model.leaderboard3x3
+                    , leaderboard5x5 = model.leaderboard5x5
+                    , leaderboard10x10 = model.leaderboard10x10
+                    }
+            )
 
 
 updateFromFrontend : SessionId -> ClientId -> ToBackend -> Model -> ( Model, Cmd BackendMsg )
 updateFromFrontend _ _ msg model =
     case msg of
-        SmashedLikeButton ->
+        SubmitScore gameName name time mistakes timestamp ->
             let
-                newSmashedLikes : Int
-                newSmashedLikes =
-                    model.smashedLikes + 1
+                newEntry : Types.LeaderboardEntry
+                newEntry =
+                    { name = name, gameName = gameName, time = time, mistakes = mistakes, timestamp = timestamp }
+
+                updateLeaderboard : List Types.LeaderboardEntry -> List Types.LeaderboardEntry
+                updateLeaderboard leaderboard =
+                    (newEntry :: leaderboard)
+                        |> List.sortBy (\entry -> entry.time * 100 + entry.mistakes)
+                        |> List.take 10
+
+                newModel : Model
+                newModel =
+                    case gameName of
+                        "3x3" ->
+                            { model | leaderboard3x3 = updateLeaderboard model.leaderboard3x3 }
+
+                        "5x5" ->
+                            { model | leaderboard5x5 = updateLeaderboard model.leaderboard5x5 }
+
+                        "10x10" ->
+                            { model | leaderboard10x10 = updateLeaderboard model.leaderboard10x10 }
+
+                        _ ->
+                            model
             in
-            ( { model | smashedLikes = newSmashedLikes }, Lamdera.broadcast <| NewSmashedLikes newSmashedLikes )
+            ( newModel
+            , Lamdera.broadcast <|
+                NewLeaderboards
+                    { leaderboard3x3 = newModel.leaderboard3x3
+                    , leaderboard5x5 = newModel.leaderboard5x5
+                    , leaderboard10x10 = newModel.leaderboard10x10
+                    }
+            )

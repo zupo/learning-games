@@ -2,4 +2,4 @@ module Bridge exposing (ToBackend(..))
 
 
 type ToBackend
-    = SmashedLikeButton
+    = SubmitScore String String Int Int Int
