@@ -28,7 +28,6 @@ import Route
 import Route.Path
 import Shared.Model
 import Shared.Msg
-import Task
 import Url exposing (Url)
 
 
@@ -40,10 +39,6 @@ type Effect msg
       -- ROUTING
     | PushUrl String
     | ReplaceUrl String
-    | LoadExternalUrl String
-    | Back
-      -- SHARED
-    | SendSharedMsg Shared.Msg.Msg
       -- PORTS
     | Say String
 
@@ -139,15 +134,6 @@ map fn effect =
         ReplaceUrl url ->
             ReplaceUrl url
 
-        Back ->
-            Back
-
-        LoadExternalUrl url ->
-            LoadExternalUrl url
-
-        SendSharedMsg sharedMsg ->
-            SendSharedMsg sharedMsg
-
         Say text ->
             Say text
 
@@ -180,16 +166,6 @@ toCmd options effect =
 
         ReplaceUrl url ->
             Browser.Navigation.replaceUrl options.key url
-
-        Back ->
-            Browser.Navigation.back options.key 1
-
-        LoadExternalUrl url ->
-            Browser.Navigation.load url
-
-        SendSharedMsg sharedMsg ->
-            Task.succeed sharedMsg
-                |> Task.perform options.fromSharedMsg
 
         Say text ->
             text_to_speech text

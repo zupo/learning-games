@@ -25,7 +25,7 @@ in
     pkgs.tailwindcss
   ];
 
-  pre-commit.hooks = {
+  git-hooks.hooks = {
     actionlint.enable = true;
     check-added-large-files.enable = true;
     check-case-conflicts.enable = true;

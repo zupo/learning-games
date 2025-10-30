@@ -23,7 +23,7 @@ type alias ToBackend =
 
 
 type BackendMsg
-    = OnConnect Lamdera.SessionId Lamdera.ClientId
+    = OnConnect Lamdera.ClientId
 
 
 type ToFrontend
