@@ -18,6 +18,7 @@ in
     pkgs.which
     pkgs.git
     pkgs-unstable.elmPackages.lamdera
+    pkgs.elmPackages.elm-json
     pkgs.elmPackages.elm-land
     pkgs-unstable.elmPackages.elm-test-rs
     pkgs.nodejs
@@ -99,6 +100,8 @@ in
     elm-test-rs --compiler $(which lamdera)
   '';
 
+  process.managers.process-compose.tui.enable = false;
+
   processes =
     if !config.devenv.isTesting then
       {
@@ -109,6 +112,7 @@ in
     else
       { };
 
+  scripts.build.exec = "lamdera make src/Env.elm && elm-land build";
   scripts.lint.exec = "pre-commit run --all-files";
   scripts.tests.exec = "elm-test-rs --compiler $(which lamdera)";
 }

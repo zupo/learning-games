@@ -44,7 +44,6 @@ jobs:
 
       - name: Install SSH key for deployment
         uses: shimataro/ssh-key-action@v2
-        if: matrix.os == 'ubuntu-latest'
         with:
           key: ${{ secrets.SSH_KEY }}
           known_hosts: "added later in Deploy step"
@@ -65,7 +64,7 @@ jobs:
       # Since this repo uses `main`, we can checkout from current branch into
       # `master` and master will get all changes from the current branch.
       - name: Lamdera check
-        if: github.event_name == 'pull_request' && matrix.os == 'ubuntu-latest'
+        if: github.event_name == 'pull_request'
         shell: devenv shell bash -- -e {0}
         run: |
           git checkout -b master

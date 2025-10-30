@@ -22,6 +22,8 @@ import NoMissingTypeAnnotationInLetIn
 import NoMissingTypeExpose
 import NoPrematureLetComputation
 import NoSimpleLetBody
+import NoUnused.CustomTypeConstructorArgs
+import NoUnused.CustomTypeConstructors
 import NoUnused.Dependencies
 import NoUnused.Exports
 import NoUnused.Parameters
@@ -53,6 +55,12 @@ config =
     , NoSimpleLetBody.rule
         |> Rule.ignoreErrorsForDirectories [ ".elm-land/", "src/Evergreen/" ]
     , NoPrematureLetComputation.rule
+        |> Rule.ignoreErrorsForDirectories [ ".elm-land/", "src/Evergreen/" ]
+    , NoUnused.CustomTypeConstructors.rule []
+        |> Rule.ignoreErrorsForDirectories [ ".elm-land/", "src/Evergreen/" ]
+    , NoUnused.CustomTypeConstructorArgs.rule
+        |> Rule.ignoreErrorsForDirectories [ ".elm-land/", "src/Evergreen/" ]
+    , NoUnused.Dependencies.rule
         |> Rule.ignoreErrorsForDirectories [ ".elm-land/", "src/Evergreen/" ]
     , NoUnused.Exports.rule
         |> Rule.ignoreErrorsForDirectories [ ".elm-land/", "src/Evergreen/" ]

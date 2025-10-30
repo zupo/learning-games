@@ -53,7 +53,7 @@ update msg model =
             ( model
             , Effect.batch
                 [ Effect.sendCmd <| Lamdera.sendToBackend Bridge.SmashedLikeButton
-                , Effect.say "Smashed it!"
+                , Effect.say "Smashed it!!!"
                 ]
             )
 
@@ -82,7 +82,7 @@ view shared _ =
                 ]
             ]
             [ img
-                [ alt "Lando, the Elm Land Rainbow"
+                [ alt "Lando, the Elm Land Rainbowww"
                 , src "https://elm.land/images/logo-480.png"
                 , css
                     [ Tw.w_32
@@ -115,7 +115,7 @@ view shared _ =
                 , Tw.my_5
                 ]
             ]
-            [ text "It's working, Mario!!" ]
+            [ text "It's working, Mario!!!" ]
         , p
             [ css
                 [ Tw.font_sans
