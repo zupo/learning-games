@@ -93,10 +93,12 @@ in
   env.BROWSERSLIST_IGNORE_OLD_DATA = "true"; # make tailwindcss quiter
 
   enterShell = ''
+    elm-land generate
     lamdera make src/Env.elm
   '';
 
   enterTest = ''
+    elm-land generate
     elm-test-rs --compiler $(which lamdera)
   '';
 
