@@ -14,4 +14,4 @@ devenv.local.nix
 .pre-commit-config.yaml
 
 # elm-land
-.elm-land/
+.elm-land/server/
