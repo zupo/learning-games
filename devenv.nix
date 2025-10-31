@@ -9,6 +9,14 @@ let
     system = pkgs.stdenv.system;
     config.allowUnfree = true;
   };
+
+  pythonWithPlaywright = pkgs.python312.withPackages (
+    ps: with ps; [
+      playwright
+      pytest
+      pytest-playwright
+    ]
+  );
 in
 {
 
@@ -22,6 +30,7 @@ in
     pkgs.elmPackages.elm-land
     pkgs-unstable.elmPackages.elm-test-rs
     pkgs.nodejs
+    pythonWithPlaywright
     pkgs.tailwindcss
   ];
 
@@ -95,11 +104,18 @@ in
   enterShell = ''
     elm-land generate
     lamdera make src/Env.elm
+
+    # Add Playwright and its dependencies to path
+    unset $PYTHONPATH
+    export PYTHONPATH="${pythonWithPlaywright}/${pythonWithPlaywright.sitePackages}:$PYTHONPATH"
+    export PLAYWRIGHT_BROWSERS_PATH=${pkgs.playwright-driver.browsers}
   '';
 
   enterTest = ''
     elm-land generate
+    lamdera make src/Env.elm
     elm-test-rs --compiler $(which lamdera)
+    browser-tests
   '';
 
   process.managers.process-compose.tui.enable = false;
@@ -114,7 +130,14 @@ in
     else
       { };
 
-  scripts.build.exec = "lamdera make src/Env.elm && elm-land build";
+  scripts.build.exec = "elm-land build && lamdera make src/Env.elm";
   scripts.lint.exec = "pre-commit run --all-files";
   scripts.tests.exec = "elm-test-rs --compiler $(which lamdera)";
+  scripts.browser-tests.exec = ''
+    pytest tests/browser/ \
+      --browser chromium \
+      --tracing retain-on-failure \
+      --video retain-on-failure \
+      --screenshot only-on-failure
+  '';
 }
