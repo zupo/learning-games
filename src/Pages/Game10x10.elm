@@ -17,6 +17,7 @@ import Shared.Model exposing (LeaderboardEntry)
 import Tailwind.Utilities as Tw
 import Task
 import Time
+import Util
 import View exposing (View)
 
 
@@ -36,6 +37,7 @@ page shared _ =
 
 type alias Model =
     { clickedCells : Set ( Int, Int )
+    , targetNumbers : List Int
     , targetNumber : Int
     , timer : Int
     , isRunning : Bool
@@ -52,6 +54,7 @@ type alias Model =
 init : () -> ( Model, Effect Msg )
 init _ =
     ( { clickedCells = Set.empty
+      , targetNumbers = []
       , targetNumber = 0
       , timer = 0
       , isRunning = True
@@ -63,50 +66,23 @@ init _ =
       , playerName = ""
       , scoreSaved = False
       }
-    , Effect.sendCmd (Random.generate GotTargetNumber (generateTarget Set.empty 0))
+    , Effect.sendCmd (Random.generate GotShuffledTargets generateAllTargets)
     )
 
 
-generateTarget : Set ( Int, Int ) -> Int -> Random.Generator Int
-generateTarget clickedCells currentTarget =
+generateAllTargets : Random.Generator (List Int)
+generateAllTargets =
     let
-        allValidProducts : List Int
-        allValidProducts =
-            [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 15, 16, 18, 20, 21, 24, 25, 27, 28, 30, 32, 35, 36, 40, 42, 45, 48, 49, 54, 56, 63, 64, 72, 81, 100 ]
-
-        -- Filter out products where ALL cells producing that product are already clicked
-        -- AND exclude the current target to force variety
-        availableProducts : List Int
-        availableProducts =
-            allValidProducts
-                |> List.filter
-                    (\product ->
-                        (product /= currentTarget)
-                            && (List.range 1 10
-                                    |> List.concatMap
-                                        (\r ->
-                                            List.range 1 10
-                                                |> List.map (\c -> ( r, c ))
-                                        )
-                                    |> List.any
-                                        (\( r, c ) ->
-                                            (r * c == product)
-                                                && not (Set.member ( r, c ) clickedCells)
-                                        )
-                               )
+        allProducts : List Int
+        allProducts =
+            List.range 1 10
+                |> List.concatMap
+                    (\r ->
+                        List.range 1 10
+                            |> List.map (\c -> r * c)
                     )
-
-        listLength : Int
-        listLength =
-            List.length availableProducts
     in
-    Random.int 0 (max 0 (listLength - 1))
-        |> Random.map
-            (\index ->
-                List.drop index availableProducts
-                    |> List.head
-                    |> Maybe.withDefault 1
-            )
+    Util.shuffle allProducts
 
 
 
@@ -115,7 +91,7 @@ generateTarget clickedCells currentTarget =
 
 type Msg
     = CellClicked Int Int
-    | GotTargetNumber Int
+    | GotShuffledTargets (List Int)
     | Tick
     | CellHovered Int Int
     | CellUnhovered
@@ -129,8 +105,20 @@ type Msg
 update : Msg -> Model -> ( Model, Effect Msg )
 update msg model =
     case msg of
-        GotTargetNumber num ->
-            ( { model | targetNumber = num }
+        GotShuffledTargets targets ->
+            let
+                firstTarget : Int
+                firstTarget =
+                    List.head targets |> Maybe.withDefault 1
+
+                remainingTargets : List Int
+                remainingTargets =
+                    List.drop 1 targets
+            in
+            ( { model
+                | targetNumbers = remainingTargets
+                , targetNumber = firstTarget
+              }
             , Effect.none
             )
 
@@ -200,18 +188,23 @@ update msg model =
                         isComplete : Bool
                         isComplete =
                             Set.size newClickedCells >= 100
+
+                        nextTarget : Int
+                        nextTarget =
+                            List.head model.targetNumbers |> Maybe.withDefault model.targetNumber
+
+                        remainingTargets : List Int
+                        remainingTargets =
+                            List.drop 1 model.targetNumbers
                     in
                     ( { model
                         | clickedCells = newClickedCells
                         , gameComplete = isComplete
                         , isRunning = not isComplete
+                        , targetNumber = nextTarget
+                        , targetNumbers = remainingTargets
                       }
-                    , if isComplete then
-                        Effect.none
-
-                      else
-                        -- Always generate a new target after finding a correct cell
-                        Effect.sendCmd (Random.generate GotTargetNumber (generateTarget newClickedCells model.targetNumber))
+                    , Effect.none
                     )
 
                 else
