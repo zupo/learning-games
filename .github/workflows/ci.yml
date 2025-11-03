@@ -39,6 +39,9 @@ jobs:
       - name: Install devenv
         run: nix profile install nixpkgs#devenv
 
+      - name: Browser tests need to run first, otherwise Lamdera server fails to start
+        run: devenv shell browser-tests
+
       - name: Run tests and linters
         run: devenv test
 
